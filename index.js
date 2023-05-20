@@ -49,7 +49,6 @@ async function run() {
 
 
         app.get('/myToys', async (req, res) => {
-            console.log(req.query.sellerEmail);
             let query = {};
             if (req.query?.sellerEmail) {
                 query = { sellerEmail: req.query.sellerEmail }
@@ -62,6 +61,32 @@ async function run() {
             const newToy = req.body;
             console.log(newToy);
             const result = await toyCollection.insertOne(newToy);
+            res.send(result);
+        })
+
+        app.put('/myToy/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedToy = req.body;
+
+            const toy = {
+                $set: {
+                    price: updatedToy.price,
+                    quantity: updatedToy.quantity,
+                    description: updatedToy.description
+                }
+            }
+            console.log(toy);
+            const result = await toyCollection.updateOne(filter, toy, options);
+            res.send(result);
+        })
+
+
+        app.delete('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.deleteOne(query);
             res.send(result);
         })
 
