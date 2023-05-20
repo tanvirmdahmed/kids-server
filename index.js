@@ -57,6 +57,20 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/myToysAsc', async (req, res) => {
+            const query = req.query.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
+            const result = await toyCollection.find(query).sort({ price: -1 }).collation({ locale: "en_US", numericOrdering: true }).toArray();
+            console.log(result);
+            res.send(result);
+        });
+
+        app.get('/myToysDsc', async (req, res) => {
+            const query = req.query.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
+            const result = await toyCollection.find(query).sort({ price: 1 }).collation({ locale: "en_US", numericOrdering: true }).toArray();
+            console.log(result);
+            res.send(result);
+        });
+
         app.post('/toy', async (req, res) => {
             const newToy = req.body;
             console.log(newToy);
