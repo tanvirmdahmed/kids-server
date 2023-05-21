@@ -40,6 +40,22 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/toys/:subCategory', async (req, res) => {
+            const subCategory = req.params.subCategory;
+
+            const result = await toyCollection.find({ subCategory: subCategory }).toArray();
+            res.send(result);
+        });
+
+        app.get('/toys/:subCategory', async (req, res) => {
+            let query = {};
+            if (req.query?.sellerEmail) {
+                query = { sellerEmail: req.query.sellerEmail }
+            }
+            const result = await toyCollection.find(query).toArray();
+            res.send(result);
+        })
+
         app.get('/toy/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -58,7 +74,12 @@ async function run() {
         })
 
         app.get('/myToysAsc', async (req, res) => {
-            const query = req.query.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
+            let query = {};
+            if (req.query?.sellerEmail) {
+                query = { sellerEmail: req.query.sellerEmail }
+            }
+
+            // const query = req.query?.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
             const result = await toyCollection.find(query).sort({ price: -1 }).toArray();
             // const result = await toyCollection.find(query).sort({ price: -1 }).collation({ locale: "en_US", numericOrdering: true }).toArray();
             console.log(result);
@@ -66,7 +87,12 @@ async function run() {
         });
 
         app.get('/myToysDsc', async (req, res) => {
-            const query = req.query.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
+            let query = {};
+            if (req.query?.sellerEmail) {
+                query = { sellerEmail: req.query.sellerEmail }
+            }
+
+            // const query = req.query?.sellerEmail ? { sellerEmail: req.query.sellerEmail } : {};
             const result = await toyCollection.find(query).sort({ price: 1 }).toArray();
             // const result = await toyCollection.find(query).sort({ price: 1 }).collation({ locale: "en_US", numericOrdering: true }).toArray();
             console.log(result);
